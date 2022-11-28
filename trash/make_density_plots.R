@@ -45,7 +45,7 @@ for(z in 1:length(las22)){
   dev.off()
 }
 
-test <- read_rds(paste("./LAS/2022/", las22[10], sep = ""))
+test <- read_rds(paste("./LAS/2022/", las22[8], sep = ""))
 ws <- seq(3, 12, 3)
 th <- seq(0.1, 1.5, length.out = length(ws))
 las_noise <- classify_noise(test, sor())
@@ -54,10 +54,14 @@ las_ground <- classify_ground(las_noise, algorithm = mcc())
 plot_crossection(las_ground, colour_by = factor(Classification))
 
 
+ws <- seq(3,12, 3)
+th <- seq(0.1, 1.5, length.out = length(ws))
+
 test2 <- read_rds(paste("./LAS/2021/", las21[9], sep = ""))
 las_noise2 <- classify_noise(test2, sor())
-las_ground2 <- classify_ground(las_noise2, algorithm = mcc())
+las_ground2 <- classify_ground(test2, algorithm = pmf(ws, th))
+las_ground3 <- classify_noise(las_ground2, sor())
 
 plot_crossection(las_ground2, colour_by = factor(Classification))
 
-plot(las_ground, color = "Classification", bg = "white")
+plot(las_ground3, color = "Classification", bg = "white")

@@ -81,3 +81,8 @@ for(i in 1:length(farms22.las)){
           file = paste("./LAS/2022/", farms22_namefix[i], "_lascatalog.rds", sep = ""))
   
 }
+
+lascat.iclip <- clip_roi(las_ground, geometry = farm.ibuf)
+
+opt_output_files(lascat.i) <- paste0(tempdir(), "{*}_classified")
+projection(las_ground) <- st_crs("ESRI:102361")
