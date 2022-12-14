@@ -6,7 +6,7 @@ library(sf)
 ## Make DTM script
 
 # Select target farm and year
-farm_yr <- 2020       # year of target farm data
+farm_yr <- 2021       # year of target farm data
 farm_name <- "UTUA2"  # name of target farm data
 
 # directory setup
@@ -15,7 +15,7 @@ tempfold <- "./tempfiles/"                 # temp directory
 setwd(laspath)
 
 # farm vector data
-farms <- readRDS("./rworking/Data/FARMSSHP/all_farms.rds")
+farms <- readRDS("~/Documents/Local_GIS/LiDAR/rworking/Data/FARMSSHP/all_farms.rds")
 
 # read in las files as LAScatalog
 las_ctg <- readLAScatalog(paste("./LAS/output/classified_ground", farm_name, farm_yr, sep = "/"))
