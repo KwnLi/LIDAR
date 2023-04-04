@@ -70,10 +70,17 @@ classlas <- function(lasflight, lasfolder, class.params){
   
   stoptime <- Sys.time()
   
+  las.metrics <- cloud_metrics(las.in.nois, .stdmetrics)
+  gnd.metrics <- cloud_metrics(filter_ground(las.in.nois), .stdmetrics)
+  
+  pt.density <- las.metrics$n/las.metrics$area
+  gnd.density <- gnd.metrics$n/gnd.metrics$area
+  
   class_metadata <- las.in.nois@data %>% 
     group_by(Classification) %>% summarize(n = n(), .groups = "drop") %>%
     pivot_wider(names_from = Classification, values_from = n, names_prefix = "Class_") %>% 
-    mutate(farm_id = farmcode[1], flight = flight,
+    mutate(pt.density = pt.density, gnd.density = gnd.density,
+           farm_id = farmcode[1], flight = flight,
            orig_filename = farmcode[2], 
            output_filename = paste("/classified/",farmcode[1], "_class_", flight, ".las", sep = ""),
            ground_algorithm = "pmf",
