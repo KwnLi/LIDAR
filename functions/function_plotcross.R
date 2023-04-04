@@ -9,8 +9,12 @@ plot_crossection <- function(las,
   data_clip <- clip_transect(las, p1, p2, width)
   p <- ggplot(data_clip@data, aes(X,Z)) + geom_point(size = 0.5) + coord_equal() + theme_minimal()
   
-  if (!is.null(colour_by))
-    p <- p + aes(color = !!colour_by) + labs(color = "")
+  if (!is.null(colour_by)){
+    cols <- c("1" = "gray", "2" = "purple", "18" = "orange")
+    p <- p + aes(color = !!colour_by) + labs(color = "") +
+      scale_color_manual(values = cols)
+  }
+
   
   return(p)
 }
