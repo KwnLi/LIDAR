@@ -52,11 +52,10 @@ classlas <- function(lasflight, lasfolder, class.params){
   # }
   
   starttime = Sys.time()
-
   las.in <- readLAS(paste(lasfolder,lasflight,sep="/")) # read in las
   
   # classify ground
-  las.in.gnd <- classify_ground(las.in, algorithm = pmf(ws = class.params$ws, th = class.params$th))
+  las.in.gnd <- classify_ground(las.in, algorithm = gnd_pmf(ws = class.params$ws, th = class.params$th))
   
   # classify noise
   las.in.nois <- classify_noise(las.in.gnd, ivf())
