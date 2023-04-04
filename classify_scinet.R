@@ -97,7 +97,6 @@ classlas <- function(lasflight, lasfolder, class.params){
 }
 
 # parallelization 
-num.cores <- 10
 
-flightmetadf <- mclapply(farms21[1:2], classlas, lasfolder=laspath21, class.params=pmfparam,
-                         mc.cores = num.cores)
+
+flightmetadf <- lapply(farms21[2], classlas, lasfolder=laspath21, class.params=pmfparam)
