@@ -32,9 +32,15 @@ farms21 <- list.files(laspath21, recursive = TRUE)
 # function that takes the farm las files and reads in las and clasifies
 
 classlas <- function(lasflight, lasfolder, class.params){
+  
   # extract farm data from the filename
   farmcode <- strsplit(lasflight, "[/.]")[[1]]
   flight <- strsplit(farmcode[2], "[_]")[[1]][3]
+  
+  # message
+  system(paste("echo 'now processing:", farmcode ,flight,"'"))
+  
+  # output directories
   if(!dir.exists(paste("./classified",farmcode[1],sep="/"))){
     dir.create(paste("./classified",farmcode[1],sep="/"), 
                recursive=TRUE) # create output directory
@@ -91,7 +97,7 @@ classlas <- function(lasflight, lasfolder, class.params){
 }
 
 # parallelization 
-num.cores <- detectCores()-2
+num.cores <- 10
 
 flightmetadf <- mclapply(farms21[1:2], classlas, lasfolder=laspath21, class.params=pmfparam,
                          mc.cores = num.cores)
