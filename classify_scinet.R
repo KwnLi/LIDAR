@@ -4,23 +4,23 @@ library(parallel)
 
 
 # This code finds and reads in las files and classifies ground and noise
-laspath <- "~/Documents/LiDAR"
+laspath <- "/90daydata/geoecoservices/LiDAR_kl"
 setwd(laspath)
 
 # unzip lidar 
-ziplist <- list.files("filtered2021")
-farmlist <- sub(".zip$","",ziplist)
+# ziplist <- list.files("filtered2021")
+# farmlist <- sub(".zip$","",ziplist)
 
-for(i in 1:length(ziplist)){
-  unzip(paste("./filtered2021/", ziplist[i],sep=""), exdir="./unzipped/")
-}
+# for(i in 1:length(ziplist)){
+#   unzip(paste("./filtered2021/", ziplist[i],sep=""), exdir="./unzipped/")
+# }
 
 # Zhang parameters for classify ground
 # most parameters taken from Zhang publications except dhmax but in effect the same
 pmfparam <- util_makeZhangParam(b = 1, dh0 = 0.2, s=1.2, dhmax = 10, exp = FALSE)
 
 # plotting cross section function
-source("~/LIDAR/functions/function_plotcross.R")
+source("./LIDAR/functions/function_plotcross.R")
 
 #### 2021 LAS classification ####
 # location of raw files
@@ -39,10 +39,11 @@ classlas <- function(lasflight, lasfolder, class.params){
     dir.create(paste("./classified",farmcode[1],sep="/"), 
                recursive=TRUE) # create output directory
   }
-  if(!dir.exists(paste("./cross_sects",farmcode[1],sep="/"))){
-    dir.create(paste("./cross_sects",farmcode[1],sep="/"), 
-               recursive=TRUE) # create cross section directory
-  }
+  # don't make separate folders for cross sections
+  # if(!dir.exists(paste("./cross_sects",farmcode[1],sep="/"))){
+  #   dir.create(paste("./cross_sects",farmcode[1],sep="/"), 
+  #              recursive=TRUE) # create cross section directory
+  # }
   
   starttime = Sys.time()
 
@@ -65,7 +66,7 @@ classlas <- function(lasflight, lasfolder, class.params){
   
   # write output
   writeLAS(las.in.nois, 
-           file = paste("./classified/",farmcode[1], "_class_", flight, ".las", sep = ""))
+           file = paste("./classified/",farmcode[1],"/",farmcode[1], "_class_", flight, ".las", sep = ""))
   
   stoptime <- Sys.time()
   
@@ -77,7 +78,7 @@ classlas <- function(lasflight, lasfolder, class.params){
            output_filename = paste("/classified/",farmcode[1], "_class_", flight, ".las", sep = ""),
            ground_algorithm = "pmf",
            pmf_ws = paste(class.params$ws, collapse=", "), pmf_th=paste(class.params$th, collapse=","),
-           process_time = starttime-stoptime)
+           process_time = stoptime-starttime)
   
   return(class_metadata)
 }
@@ -85,5 +86,5 @@ classlas <- function(lasflight, lasfolder, class.params){
 # parallelization 
 num.cores <- detectCores()-2
 
-flightmetadf <- mclapply(farms21, classlas, lasfolder=laspath21, pmfparam,
+flightmetadf <- mclapply(farms21[1:2], classlas, lasfolder=laspath21, class.params=pmfparam,
                          mc.cores = num.cores)
