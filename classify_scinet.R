@@ -1,7 +1,5 @@
 library(lidR)
 library(tidyverse)
-library(parallel)
-
 
 # This code finds and reads in las files and classifies ground and noise
 laspath <- "/90daydata/geoecoservices/LiDAR_kl"
@@ -35,7 +33,8 @@ classlas <- function(lasflight, lasfolder, class.params){
   
   # extract farm data from the filename
   farmcode <- strsplit(lasflight, "[/.]")[[1]]
-  flight <- strsplit(farmcode[2], "[_]")[[1]][3]
+  flightsplit <- strsplit(farmcode[2], "[_]")[[1]]
+  flight <- flightsplit[grepl("^flight*", flightsplit)]
   
   # message
   system(paste("echo 'now processing:", farmcode ,flight,"'"))
@@ -55,7 +54,7 @@ classlas <- function(lasflight, lasfolder, class.params){
   las.in <- readLAS(paste(lasfolder,lasflight,sep="/")) # read in las
   
   # classify ground
-  las.in.gnd <- classify_ground(las.in, algorithm = gnd_pmf(ws = class.params$ws, th = class.params$th))
+  las.in.gnd <- classify_ground(las.in, algorithm = pmf(ws = class.params$ws, th = class.params$th))
   
   # classify noise
   las.in.nois <- classify_noise(las.in.gnd, ivf())
@@ -95,7 +94,16 @@ classlas <- function(lasflight, lasfolder, class.params){
   return(class_metadata)
 }
 
-# parallelization 
+# parallel
+library(foreach)
+library(doParallel)
+
+registerDoParallel(cores = detectCores()-2)
+
+flightmetadf <- foreach(fname=farms21) %dopar% {
+  classlas(fname, lasfolder=laspath21, class.params=pmfparam)
+}
 
 
-flightmetadf <- lapply(farms21[2], classlas, lasfolder=laspath21, class.params=pmfparam)
+flightmetadf <- lapply(farms21, classlas, 
+                       lasfolder=laspath21, class.params=pmfparam)
