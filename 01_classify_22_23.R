@@ -29,7 +29,7 @@ class_nsgnd <- function(x, ws, th, ...){
 }
 
 # list folder years
-yearslist <- c("2021", "2022", "2023")
+yearslist <- c("2022", "2023")
 
 years <- listenv()
 
@@ -37,7 +37,7 @@ for(j in yearslist){
   print(j)
   
   # output path
-  output <- paste0("output/", j)
+  output <- paste0("output2/", j)
   
   farmlist <- list.files(paste0(laspath,"/lidar/lidar_",j))
   
@@ -45,15 +45,16 @@ for(j in yearslist){
     classified_j <- listenv()
     
     for (i in farmlist){
+      print(paste0("Processing farm ", i, ", year ", j))
       ctg <- readLAScatalog(paste0(laspath, "/lidar/lidar_",j,"/",i), 
-                            filter = "-keep_scan_angle -20 20")
+                            filter = "-keep_scan_angle -30 30")
       opt_chunk_size(ctg)<-250
       
       # create output folder
       farm_out <- paste(laspath, output,i,sep="/")
       dir.create(farm_out, recursive = TRUE)
       
-      opt_output_files(ctg) <- paste0(farm_out, "/", i, "_", j, "_", "{XLEFT}_{YBOTTOM}")
+      opt_output_files(ctg) <- paste0(farm_out, "/", i, "_", j, "_30_", "{XLEFT}_{YBOTTOM}")
       
       # create laxindex: https://cran.r-project.org/web/packages/lidR/vignettes/lidR-computation-speed-LAScatalog.html
       lidR:::catalog_laxindex(ctg)
