@@ -34,7 +34,7 @@ class_nsgnd <- function(x, ws, th, ...){
   return(classified_ground)
 }
 
-# # test
+# test
 test <- listenv()
 for(j in 1:2){
   test[[j]] %<-% {

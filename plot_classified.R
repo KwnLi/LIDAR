@@ -1,5 +1,5 @@
 library(lidR)
-laspath <- "~/Documents/Data/lidar/all_scan_angle/"
+laspath <- "~/Documents/Data/lidar/all_scan_angle/normalized/"
 source("./functions/function_plotcross.R")
 source("./functions/lascatalog_inspect.R")
 
@@ -25,7 +25,7 @@ for(i in 1:2){
   year.i <- c(2022, 2023)[i]
   farms.i <- list.files(path = paste0(laspath,year.i))
   for(g in 1:length(farms.i)){
-    png(paste0("./plots_allscan/",farms.i[g],"_",year.i,".png"), res = 300,
+    png(paste0("./plots_allscan_normalized/",farms.i[g],"_",year.i,".png"), res = 300,
         height = 8.5, width = 11, units = "in", bg = "white")
     plot(outpics[[i]][[g]])
     dev.off()

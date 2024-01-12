@@ -26,3 +26,8 @@ check_tile_bounds <- function(ctg){
   
   return(shared.borders)
 }
+
+check_tile_size <- function(ctg){
+  tile.size <- ctg$Number.of.point.records
+  return(tile.size)
+}
